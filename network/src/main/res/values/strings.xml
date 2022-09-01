@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Network</string>
+    <string name="unknown_error">未知错误</string>
+    <string name="parse_error">解析错误</string>
+    <string name="network_error">网络错误</string>
+    <string name="protocol_error">协议错误</string>
+    <string name="certificate_error">证书错误</string>
+    <string name="connection_timeout">连接超时</string>
+    <string name="unknown_host">网络连接异常</string>
+    <string name="login_overdue">登录过期</string>
+</resources>
