@@ -14,6 +14,9 @@
         android:theme="@style/Theme.LearnningProject"
         tools:targetApi="31">
         <activity
+            android:name=".service.BinderActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -22,6 +25,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name=".service.MessengerService"
+            android:label="@string/bind_message"/>
+        <service android:name=".service.LocalService"
+            android:label="@string/bind_service"/>
+        <service android:name=".service.setUpService"
+            android:label="@string/setUp_intentService"/>
+        <service android:name=".service.startService"
+            android:label="@string/start_service" />
+        <receiver android:exported="true"
+            android:name=".broadcast.ManifestBroadcast"
+            android:permission="android.permission.SEND_SMS">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.INPUT_METHOD_CHANGED"/>
+                <action android:name="android.intent.action.AIRPLANE_MODE"/>
+                <action android:name="android.intent.action.BATTERY_LOW"/>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

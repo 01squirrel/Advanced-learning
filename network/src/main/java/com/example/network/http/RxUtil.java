@@ -17,12 +17,15 @@ public class RxUtil {
     }
 
     public static <T> Flowable<BaseBean<T>> createData(final BaseBean<T> baseBean){
-        @NonNull Flowable<BaseBean<T>> baseBeanFlowable = Flowable.create(emitter -> {
-            try {
-                emitter.onNext(baseBean);
-                emitter.onComplete();
-            } catch (Exception e) {
-                emitter.onError(e);
+        @NonNull Flowable<BaseBean<T>> baseBeanFlowable = Flowable.create(new FlowableOnSubscribe<BaseBean<T>>() {
+            @Override
+            public void subscribe(@NonNull FlowableEmitter<BaseBean<T>> emitter) throws Throwable {
+                try {
+                    emitter.onNext(baseBean);
+                    emitter.onComplete();
+                } catch (Exception e) {
+                    emitter.onError(e);
+                }
             }
         }, BackpressureStrategy.BUFFER);
         baseBeanFlowable.subscribeOn(Schedulers.io());
