@@ -1,7 +1,7 @@
 package com.example.network.exception;
 
 import com.example.network.R;
-import com.example.learnningproject.base.BaseBean;
+import com.example.network.http.BaseBean;
 
 public class ResponseException extends ExceptionHandler.ServerException{
     public ResponseException(int code,String msg) {

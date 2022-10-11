@@ -18,9 +18,7 @@ import androidx.annotation.Nullable;
  * 若要求服务执行多线程（而非通过工作队列处理启动请求），则可通过扩展 Service 类来处理每个 Intent。
  * 对于每个启动请求，其均使用工作线程来执行作业，且每次仅处理一个请求。
  */
-public class startService extends Service {
-    //Looper 是为关联的线程运行消息循环的对象。
-    private Looper serviceLooper;
+public class StartService extends Service {
     private serviceHandler handler;
 
     //  receive messages from the thread
@@ -49,7 +47,8 @@ public class startService extends Service {
         //启动运行服务的线程。
         HandlerThread thread = new HandlerThread("serviceStart", Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
-        serviceLooper = thread.getLooper();
+        //Looper 是为关联的线程运行消息循环的对象。
+        Looper serviceLooper = thread.getLooper();
         handler = new serviceHandler(serviceLooper);
         super.onCreate();
     }

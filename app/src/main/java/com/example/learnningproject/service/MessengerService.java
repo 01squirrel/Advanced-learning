@@ -6,9 +6,11 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.service.controls.Control;
@@ -37,8 +39,14 @@ public class MessengerService extends Service {
     //创建handler接收客户端消息
     static class IncomingHandler extends Handler {
         private final Context clientContext;
+        @Deprecated
         IncomingHandler(Context context){
             this.clientContext = context.getApplicationContext();
+        }
+
+        public IncomingHandler(@NonNull Looper looper, Context clientContext) {
+            super(looper);
+            this.clientContext = clientContext.getApplicationContext();
         }
 
         @Override
@@ -55,7 +63,7 @@ public class MessengerService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         Toast.makeText(getApplicationContext(), "binding", Toast.LENGTH_SHORT).show();
-        messenger = new Messenger(new IncomingHandler(this));
+        messenger = new Messenger(new IncomingHandler(Looper.myLooper(),this));
         return messenger.getBinder();
     }
 

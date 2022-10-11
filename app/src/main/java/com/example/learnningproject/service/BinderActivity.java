@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.learnningproject.R;
-import com.google.android.material.button.MaterialButton;
 
 //绑定服务
 public class BinderActivity extends AppCompatActivity {
@@ -29,6 +28,8 @@ public class BinderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_binder);
+        Intent intent = new Intent(this, StartService.class);
+        startService(intent);//启动服务
     }
 
     @Override
@@ -69,7 +70,7 @@ public class BinderActivity extends AppCompatActivity {
         }
     }
 
-    //通过扩展binder类获取
+    //通过扩展binder类获取,我们通过ServiceConnection接口来取得建立连接与连接意外丢失的回调
     private final ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {

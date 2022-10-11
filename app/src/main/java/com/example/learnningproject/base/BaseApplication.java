@@ -2,11 +2,23 @@ package com.example.learnningproject.base;
 
 import android.app.Application;
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 
+import androidx.annotation.NonNull;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import androidx.sqlite.db.SupportSQLiteDatabase;
+
 import com.example.learnningproject.broadcast.ManifestBroadcast;
+import com.example.learnningproject.database.AppDataBase;
+import com.example.learnningproject.database.entity.UserEntity;
+
+import java.util.concurrent.Executors;
+
+import kotlin.Unit;
 
 public class BaseApplication extends Application {
 
@@ -14,6 +26,7 @@ public class BaseApplication extends Application {
     public BaseApplication() {
         super();
     }
+    private AppDataBase dataBase;
 
     @Override
     public void onCreate() {
@@ -25,6 +38,24 @@ public class BaseApplication extends Application {
         br = new ManifestBroadcast();
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         this.registerReceiver(br,filter);
+    }
+    public AppDataBase getDb(){
+        UserEntity entity = new UserEntity(1,"bob","jojo",18);
+        if(dataBase == null){
+            dataBase = Room.databaseBuilder(getApplicationContext(),AppDataBase.class,"learn_database")
+                    .addCallback(new RoomDatabase.Callback() {
+                        @Override
+                        public void onCreate(@NonNull SupportSQLiteDatabase db) {
+                            super.onCreate(db);
+                            //预填充数据库,示例
+                            Executors.newSingleThreadExecutor().execute(()->{
+                                dataBase.userLibraryDao().addUser(entity);
+                            });
+                        }
+                    })
+                    .build();
+        }
+        return dataBase;
     }
 
     @Override

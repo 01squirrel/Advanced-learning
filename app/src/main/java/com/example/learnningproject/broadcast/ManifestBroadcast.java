@@ -4,13 +4,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
+
+import java.security.PrivilegedAction;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 //清单声明的接收器
 public class ManifestBroadcast extends BroadcastReceiver {
     private static final String TAG = "MyBroadcastReceive";
-
+    ExecutorService service = Executors.newSingleThreadExecutor();
+    Handler handler = new Handler(Looper.myLooper());
     @Override
     public void onReceive(Context context, Intent intent) {
         //使用 goAsync() 来标记它在 onReceive() 完成后需要更多时间才能完成。
@@ -29,6 +36,13 @@ public class ManifestBroadcast extends BroadcastReceiver {
                 Toast.makeText(context,"电量低，请连接充电器",Toast.LENGTH_SHORT).show();
         }
         //Toast.makeText(context, log, Toast.LENGTH_LONG).show();
+        //new form to replace task
+        service.execute(()->{
+            String logs = "Action: " + intent.getAction() + "\n" +
+                    "URI: " + intent.toUri(Intent.URI_INTENT_SCHEME) + "\n";
+            Log.d(TAG, logs);
+            handler.post(pendingResult::finish);
+        });
     }
 
     private static class Task extends AsyncTask<String,Integer,String>{

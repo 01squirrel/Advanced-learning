@@ -11,9 +11,9 @@ import androidx.annotation.Nullable;
  * 大多数启动服务无需同时处理多个请求,最佳选择是利用 IntentService 类实现服务。
  */
 
-public class setUpService extends IntentService {
+public class SetUpService extends IntentService {
 
-    public setUpService() {
+    public SetUpService() {
         super("intentService");
     }
 
@@ -21,7 +21,7 @@ public class setUpService extends IntentService {
      * @param name 服务名
      * @deprecated
      */
-    public setUpService(String name) {
+    public SetUpService(String name) {
         super(name);
     }
 

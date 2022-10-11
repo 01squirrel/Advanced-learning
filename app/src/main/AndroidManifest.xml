@@ -29,9 +29,9 @@
             android:label="@string/bind_message"/>
         <service android:name=".service.LocalService"
             android:label="@string/bind_service"/>
-        <service android:name=".service.setUpService"
+        <service android:name=".service.SetUpService"
             android:label="@string/setUp_intentService"/>
-        <service android:name=".service.startService"
+        <service android:name=".service.StartService"
             android:label="@string/start_service" />
         <receiver android:exported="true"
             android:name=".broadcast.ManifestBroadcast"

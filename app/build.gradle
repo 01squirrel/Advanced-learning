@@ -25,15 +25,25 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    dataBinding{
+        enabled  = true
+    }
+    android.applicationVariants.all{ variant ->
+        variant.outputs.all{
+            outputFileName = "LearnApk_${BuildType.name}_V${versionName}_${getTime()}.apk"
+        }
+    }
 }
 
+static def getTime(){
+    return new Date().format("yy-MM-dd")
+}
 dependencies {
-
     implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
     implementation project(path: ':network')
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
@@ -42,13 +52,40 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 
     //retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.6.2'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
 
     //rxjava
     implementation 'io.reactivex.rxjava3:rxjava:3.0.4'
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
     implementation "androidx.lifecycle:lifecycle-common-java8:2.4.0"
-
-    implementation "androidx.lifecycle:lifecycle-runtime:2.4.0"
+    //lifecycle
+    implementation "androidx.lifecycle:lifecycle-runtime:2.5.1"
     implementation "org.reactivestreams:reactive-streams:1.0.3"
+    //room
+    def room_version = "2.4.3"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+
+    // To use Kotlin annotation processing tool (kapt)
+    //kapt "androidx.room:room-compiler:$room_version"
+    // To use Kotlin Symbol Processing (KSP)
+    //ksp "androidx.room:room-compiler:$room_version"
+
+    // optional - RxJava2 support for Room
+    implementation "androidx.room:room-rxjava2:$room_version"
+
+    // optional - RxJava3 support for Room
+    implementation "androidx.room:room-rxjava3:$room_version"
+
+    // optional - Guava support for Room, including Optional and ListenableFuture
+    implementation "androidx.room:room-guava:$room_version"
+
+    // optional - Test helpers
+    testImplementation "androidx.room:room-testing:$room_version"
+
+    // optional - Paging 3 Integration
+    implementation "androidx.room:room-paging:2.5.0-alpha03"
+
+    implementation "androidx.concurrent:concurrent-futures:1.1.0"
 }

@@ -17,7 +17,8 @@ public class RxUtil {
     }
 
     public static <T> Flowable<BaseBean<T>> createData(final BaseBean<T> baseBean){
-        @NonNull Flowable<BaseBean<T>> baseBeanFlowable = Flowable.create(new FlowableOnSubscribe<BaseBean<T>>() {
+        @NonNull
+        Flowable<BaseBean<T>> baseBeanFlowable = Flowable.create(new FlowableOnSubscribe<BaseBean<T>>() {
             @Override
             public void subscribe(@NonNull FlowableEmitter<BaseBean<T>> emitter) throws Throwable {
                 try {
