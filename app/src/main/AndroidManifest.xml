@@ -3,7 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.learnningproject">
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- 声明apk所需要的内容 -->
+    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
     <application
+        android:name=".base.BaseApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -14,36 +27,107 @@
         android:theme="@style/Theme.LearnningProject"
         tools:targetApi="31">
         <activity
-            android:name=".service.BinderActivity"
+            android:name=".provider.FileRequestActivity"
+            android:exported="false" />
+        <activity
+            android:name=".provider.FileSelectActivity"
+            android:exported="false"
+            android:label="File Selector">
+            <intent-filter>
+                <action android:name="android.intent.action.PICK" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.OPENABLE" />
+
+                <data android:mimeType="text/plain" />
+                <data android:mimeType="image/*" />
+            </intent-filter>
+        </activity>
+
+        <provider
+            android:name=".provider.MyFileProvider"
+            android:authorities="com.example.learnningproject.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <activity
+            android:name=".NewWordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".WordsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".cameraSample.Camera2BasicActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.LearnningProject">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
+            </intent-filter>
         </activity>
-        <service android:name=".service.MessengerService"
-            android:label="@string/bind_message"/>
-        <service android:name=".service.LocalService"
-            android:label="@string/bind_service"/>
-        <service android:name=".service.SetUpService"
-            android:label="@string/setUp_intentService"/>
-        <service android:name=".service.StartService"
+        <activity
+            android:name=".cameraSample.CameraXActivity"
+            android:exported="false" />
+        <activity
+            android:name=".cameraSample.Camera2Activity"
+            android:exported="false" />
+        <activity
+            android:name=".service.BinderActivity"
+            android:exported="false" />
+
+        <service
+            android:name=".service.MessengerService"
+            android:label="@string/bind_message" />
+        <service
+            android:name=".service.LocalService"
+            android:label="@string/bind_service" />
+        <service
+            android:name=".service.SetUpService"
+            android:label="@string/setUp_intentService" />
+        <service
+            android:name=".service.StartService"
             android:label="@string/start_service" />
-        <receiver android:exported="true"
+
+        <receiver
             android:name=".broadcast.ManifestBroadcast"
+            android:exported="true"
             android:permission="android.permission.SEND_SMS">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="android.intent.action.INPUT_METHOD_CHANGED"/>
-                <action android:name="android.intent.action.AIRPLANE_MODE"/>
-                <action android:name="android.intent.action.BATTERY_LOW"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.INPUT_METHOD_CHANGED" />
+                <action android:name="android.intent.action.AIRPLANE_MODE" />
+                <action android:name="android.intent.action.BATTERY_LOW" />
             </intent-filter>
         </receiver>
-
     </application>
 
 </manifest>

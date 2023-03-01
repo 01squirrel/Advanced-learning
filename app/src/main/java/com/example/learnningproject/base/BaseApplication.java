@@ -6,27 +6,37 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.camera.camera2.Camera2Config;
+import androidx.camera.core.CameraSelector;
+import androidx.camera.core.CameraXConfig;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.learnningproject.broadcast.ManifestBroadcast;
 import com.example.learnningproject.database.AppDataBase;
+import com.example.learnningproject.database.dao.WordDao;
 import com.example.learnningproject.database.entity.UserEntity;
+import com.example.learnningproject.database.entity.Word;
 
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import kotlin.Unit;
+import kotlin.jvm.Volatile;
 
-public class BaseApplication extends Application {
+public class BaseApplication extends Application implements CameraXConfig.Provider {
 
     private BroadcastReceiver br;
     public BaseApplication() {
         super();
     }
-    private AppDataBase dataBase;
+    private static volatile AppDataBase dataBase;
+    private static final int NUMBER_OF_THREADS = 4;
+    public static ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
     @Override
     public void onCreate() {
@@ -39,21 +49,34 @@ public class BaseApplication extends Application {
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         this.registerReceiver(br,filter);
     }
-    public AppDataBase getDb(){
+    public AppDataBase getDbInstance(){
         UserEntity entity = new UserEntity(1,"bob","jojo",18);
         if(dataBase == null){
-            dataBase = Room.databaseBuilder(getApplicationContext(),AppDataBase.class,"learn_database")
-                    .addCallback(new RoomDatabase.Callback() {
-                        @Override
-                        public void onCreate(@NonNull SupportSQLiteDatabase db) {
-                            super.onCreate(db);
-                            //预填充数据库,示例
-                            Executors.newSingleThreadExecutor().execute(()->{
-                                dataBase.userLibraryDao().addUser(entity);
-                            });
-                        }
-                    })
-                    .build();
+            synchronized (AppDataBase.class){
+                if(dataBase == null){
+                    dataBase = Room.databaseBuilder(getApplicationContext(),AppDataBase.class,"learn_database")
+                            .addCallback(new RoomDatabase.Callback() {
+                                @Override
+                                public void onCreate(@NonNull SupportSQLiteDatabase db) {
+                                    super.onCreate(db);
+                                    //预填充数据库,示例
+                                    Executors.newSingleThreadExecutor().execute(()->{
+                                        dataBase.userLibraryDao().addUser(entity);
+                                    });
+                                    databaseWriteExecutor.execute(()->{
+                                        WordDao wordDao = dataBase.wordDao();
+                                        wordDao.deleteAll();
+                                        Word word = new Word("Hello");
+                                        wordDao.insertWord(word);
+                                        word = new Word("World");
+                                        wordDao.insertWord(word);
+                                    });
+
+                                }
+                            })
+                            .build();
+                }
+            }
         }
         return dataBase;
     }
@@ -67,5 +90,14 @@ public class BaseApplication extends Application {
     @Override
     public void onLowMemory() {
         super.onLowMemory();
+    }
+
+    @NonNull
+    @Override
+    public CameraXConfig getCameraXConfig() {
+        return CameraXConfig.Builder.fromConfig(Camera2Config.defaultConfig())
+                .setMinimumLoggingLevel(Log.ERROR)
+                .setAvailableCamerasLimiter(CameraSelector.DEFAULT_FRONT_CAMERA)
+                .build();
     }
 }

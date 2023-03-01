@@ -2,10 +2,8 @@ package com.example.learnningproject;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Build;
 import android.os.Bundle;
-import android.view.ViewGroup;
 import android.view.WindowMetrics;
 
 import com.example.learnningproject.ui.main.MainFragment;
@@ -14,7 +12,6 @@ public class MainActivity extends AppCompatActivity {
 
     public enum WindowSizeClass{COMPACT,MEDIUM,EXPANDED}
 
-    @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,7 +21,9 @@ public class MainActivity extends AppCompatActivity {
                     .replace(R.id.container, MainFragment.newInstance())
                     .commitNow();
         }
-        computeWindowSizeClasses();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            computeWindowSizeClasses();
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.R)
