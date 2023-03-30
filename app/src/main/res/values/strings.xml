@@ -11,4 +11,14 @@
     <string name="button_save">Save</string>
     <string name="empty_not_saved">Word not saved because it is empty.</string>
     <string name="file_info">filename:%1$s,size:%2$d,type:%3$s</string>
+    <string name="select_and_enter">SELECT AND ENTER</string>
+    <string name="share_info">share_info</string>
+    <string name="open_camera2">open_camera2</string>
+    <string name="camera2_basic">camera2_basic</string>
+    <string name="room_database">ROOM DATABASE</string>
+    <string name="image">image</string>
+    <string name="request_file">REQUEST FILE</string>
+    <string name="completed">完成</string>
+    <string name="add_word">add word</string>
+    <string name="capture_image">Capture image</string>
 </resources>
