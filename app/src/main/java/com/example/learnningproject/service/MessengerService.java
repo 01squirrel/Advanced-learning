@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -39,10 +38,10 @@ public class MessengerService extends Service {
     //创建handler接收客户端消息
     static class IncomingHandler extends Handler {
         private final Context clientContext;
-        @Deprecated
-        IncomingHandler(Context context){
-            this.clientContext = context.getApplicationContext();
-        }
+//        @Deprecated
+//        IncomingHandler(Context context){
+//            this.clientContext = context.getApplicationContext();
+//        }
 
         public IncomingHandler(@NonNull Looper looper, Context clientContext) {
             super(looper);
@@ -82,7 +81,7 @@ public class MessengerService extends Service {
     @RequiresApi(api = Build.VERSION_CODES.R)
     private void showNotice(){
         CharSequence charSequence = getText(R.string.app_name);
-        PendingIntent content = PendingIntent.getActivity(this,0,new Intent(this, Control.class),0);
+        PendingIntent content = PendingIntent.getActivity(this,0,new Intent(this, Control.class),PendingIntent.FLAG_IMMUTABLE);
         Notification notification = new Notification.Builder(this)
                 .setSmallIcon(R.drawable.ic_launcher_background)  // the status icon
                 .setTicker(charSequence)  // the status text

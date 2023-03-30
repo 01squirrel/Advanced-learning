@@ -20,7 +20,7 @@ public class ResponseException extends ExceptionHandler.ServerException{
             default:
                 if(String.valueOf(code).length() == 3){
                     this.setMsgResId(R.string.network_error);
-                }else {
+                } else {
                     this.setMsgResId(0);
                 }
                 break;

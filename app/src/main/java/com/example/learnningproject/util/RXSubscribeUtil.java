@@ -9,8 +9,8 @@ import io.reactivex.rxjava3.subscribers.DisposableSubscriber;
 public abstract class RXSubscribeUtil<T> extends DisposableSubscriber<BaseBean<T>> {
 
     @Override
-    public void onNext(BaseBean<T> baseBean) {
-        doOnNext(baseBean);
+    public void onNext(BaseBean<T> dataBean) {
+        doOnNext(dataBean);
     }
 
     @Override
@@ -18,7 +18,7 @@ public abstract class RXSubscribeUtil<T> extends DisposableSubscriber<BaseBean<T
       doOnError(ExceptionHandler.handlerException(t));
       if(t instanceof ExceptionHandler.ServerException){
           ExceptionHandler.ServerException exception = (ExceptionHandler.ServerException) t;
-          if(exception.getCode() >= 500){
+          if(exception.getCode() >= 500) {
               exception.setCode(((ExceptionHandler.ServerException) t).getCode());
               exception.setMsg(((ExceptionHandler.ServerException) t).getMsg());
               throw exception;

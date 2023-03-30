@@ -54,7 +54,7 @@ public abstract class BasePresenter<V extends BaseView> implements DefaultLifecy
         }
     }
     /**
-     * 清楚订阅
+     * 清除订阅
      */
     public void unSubscribe(){
         if(compositeDisposable != null)

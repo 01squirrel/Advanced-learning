@@ -17,9 +17,9 @@ public class NetWorkInterceptor implements Interceptor {
     @Override
     public Response intercept(@NonNull Chain chain) throws IOException {
         String token  = MRequest.getToken();
-        if(TextUtils.isEmpty(token)){
+        if (TextUtils.isEmpty(token)) {
             return chain.proceed(chain.request());
-        }else {
+        } else {
             Request oldRequest = chain.request();
             Request request = oldRequest.newBuilder()
                     .header("Authorization",token)

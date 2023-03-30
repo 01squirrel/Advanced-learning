@@ -25,9 +25,6 @@ import com.example.learnningproject.database.entity.Word;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import kotlin.Unit;
-import kotlin.jvm.Volatile;
-
 public class BaseApplication extends Application implements CameraXConfig.Provider {
 
     private BroadcastReceiver br;
@@ -60,9 +57,7 @@ public class BaseApplication extends Application implements CameraXConfig.Provid
                                 public void onCreate(@NonNull SupportSQLiteDatabase db) {
                                     super.onCreate(db);
                                     //预填充数据库,示例
-                                    Executors.newSingleThreadExecutor().execute(()->{
-                                        dataBase.userLibraryDao().addUser(entity);
-                                    });
+                                    Executors.newSingleThreadExecutor().execute(()-> dataBase.userLibraryDao().addUser(entity));
                                     databaseWriteExecutor.execute(()->{
                                         WordDao wordDao = dataBase.wordDao();
                                         wordDao.deleteAll();

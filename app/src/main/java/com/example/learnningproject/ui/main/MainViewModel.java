@@ -4,7 +4,6 @@ import android.app.PendingIntent;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ShortcutInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -12,12 +11,7 @@ import android.os.Build;
 import android.os.Environment;
 
 import androidx.annotation.RequiresApi;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-import androidx.core.content.pm.ShortcutInfoCompat;
-import androidx.core.content.pm.ShortcutManagerCompat;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.learnningproject.R;
@@ -26,16 +20,20 @@ import com.example.learnningproject.broadcast.ManifestBroadcast;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class MainViewModel extends ViewModel {
-    // TODO: Implement the ViewModel
-    private final String image_dir = "images";
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void shareInfo(){
         //分享信息
-       Context context = MainFragment.newInstance().getContext();
+        Context context = MainFragment.newInstance().getContext();
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
         intent.putExtra(Intent.EXTRA_TEXT, "Hello!");
@@ -43,7 +41,7 @@ public class MainViewModel extends ViewModel {
         intent.putExtra(Intent.EXTRA_TITLE, "Send message");
         intent.setType("text/plain");
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1,
-                new Intent(context,ManifestBroadcast.class), PendingIntent.FLAG_UPDATE_CURRENT);
+                new Intent(context,ManifestBroadcast.class), PendingIntent.FLAG_IMMUTABLE);
         intent = Intent.createChooser(intent,"share info",pendingIntent.getIntentSender());
         if (context != null) {
             context.startActivity(intent);
@@ -70,18 +68,20 @@ public class MainViewModel extends ViewModel {
         Context ctx = MainFragment.newInstance().getContext();
         if (ctx != null){
             Bitmap bm = BitmapFactory.decodeResource(ctx.getResources(), R.mipmap.ic_launcher);
-            File path = new File(Environment.getExternalStorageDirectory(),image_dir);
-            path.mkdirs();
-            FileOutputStream outputStream = new FileOutputStream(path+File.separator+"image.png");
-            bm.compress(Bitmap.CompressFormat.PNG,100,outputStream);
-            File imagePath = new File(Environment.getExternalStorageDirectory(),image_dir);
+            String image_dir = "images";
+            File path = new File(Environment.getExternalStorageDirectory(), image_dir);
+            if(path.mkdirs()){
+                FileOutputStream outputStream = new FileOutputStream(path+File.separator+"image.png");
+                bm.compress(Bitmap.CompressFormat.PNG,100,outputStream);
+            }
+            File imagePath = new File(Environment.getExternalStorageDirectory(), image_dir);
             File newFile = new File(imagePath,"image.png");
             return FileProvider.getUriForFile(ctx,"com.android",newFile);
         }
         return null;
     }
     private ClipData getClip(){
-        try{
+        try {
             Context context = MainFragment.newInstance().getContext();
             Uri contentUri = saveImage();
             assert context != null;

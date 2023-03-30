@@ -9,11 +9,10 @@ import androidx.annotation.Nullable;
 
 import java.util.Random;
 
-//绑定服务，通过扩展binder类
 
 /**
+ * 绑定服务，通过扩展binder类
  * 以下为设置方式：
- *
  * 1.在服务中，创建可执行以下某种操作的 Binder 实例：
  *      包含客户端可调用的公共方法。
  *      返回当前的 Service 实例，该实例中包含客户端可调用的公共方法。

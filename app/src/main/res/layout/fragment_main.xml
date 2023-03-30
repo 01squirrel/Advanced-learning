@@ -22,9 +22,9 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="15dp"
             android:background="@color/blue"
-            android:text="SELECT AND ENTER"
+            android:text="@string/select_and_enter"
             android:textAlignment="center"
             android:textSize="20sp"
             android:textColor="@color/black"/>
@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="@{()->model.shareInfo()}"
-            android:text="share_info"
+            android:text="@string/share_info"
             android:backgroundTint="@color/teal_200"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
@@ -43,7 +43,7 @@
             android:id="@+id/mb_camera2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="open_camera2"
+            android:text="@string/open_camera2"
             android:backgroundTint="@color/teal_200"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
@@ -58,14 +58,14 @@
             android:layout_marginTop="70dp"
             android:layout_marginStart="10dp"
             app:backgroundTint="@color/teal_200"
-            android:text="camera2_basic"/>
+            android:text="@string/camera2_basic"/>
 
         <com.google.android.material.button.MaterialButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/mb_room"
             app:backgroundTint="@color/teal_200"
-            android:text="ROOM DATABASE"
+            android:text="@string/room_database"
             app:layout_constraintTop_toBottomOf="@+id/mb_camera2"
             app:layout_constraintStart_toEndOf="@+id/mb_camera2Basic"
             android:layout_marginStart="10dp"

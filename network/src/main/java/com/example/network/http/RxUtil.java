@@ -18,19 +18,16 @@ public class RxUtil {
 
     public static <T> Flowable<BaseBean<T>> createData(final BaseBean<T> baseBean){
         @NonNull
-        Flowable<BaseBean<T>> baseBeanFlowable = Flowable.create(new FlowableOnSubscribe<BaseBean<T>>() {
-            @Override
-            public void subscribe(@NonNull FlowableEmitter<BaseBean<T>> emitter) throws Throwable {
-                try {
-                    emitter.onNext(baseBean);
-                    emitter.onComplete();
-                } catch (Exception e) {
-                    emitter.onError(e);
-                }
+        Flowable<BaseBean<T>> baseBeanFlowable = Flowable.create((FlowableOnSubscribe<BaseBean<T>>) emitter -> {
+            try {
+                emitter.onNext(baseBean);
+                emitter.onComplete();
+            } catch (Exception e) {
+                emitter.onError(e);
             }
-        }, BackpressureStrategy.BUFFER);
-        baseBeanFlowable.subscribeOn(Schedulers.io());
-        baseBeanFlowable.observeOn(AndroidSchedulers.mainThread());
+        }, BackpressureStrategy.BUFFER)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
         return baseBeanFlowable;
     }
 
@@ -39,7 +36,7 @@ public class RxUtil {
                 (Function<BaseBean<T>, Publisher<BaseBean<T>>>) bean ->{
             if(bean.getCode() == BaseBean.CODE_OK){
                 return createData(bean);
-            }else {
+            } else {
                 return Flowable.error(new ResponseException(bean.getCode(), bean.getMsg()));
             }
         }).subscribeOn(Schedulers.io())
@@ -47,21 +44,15 @@ public class RxUtil {
     }
 
     public static <T> FlowableTransformer<BaseBean<T>,BaseBean<T>> handleResult(final int successCode){
-        return new FlowableTransformer<BaseBean<T>, BaseBean<T>>() {
-            @Override
-            public @NonNull Publisher<BaseBean<T>> apply(@NonNull Flowable<BaseBean<T>> upstream) {
-                return upstream.flatMap(
-                        (
-                                Function<BaseBean<T>,Publisher<BaseBean<T>>>) bean ->{
-                            if (bean.getCode() == successCode){
-                                return createData(bean);
-                            }else {
-                                return Flowable.error(new ResponseException(bean.getCode(),bean.getMsg()));
-                            }
-                        }
-                ).subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread());
-            }
-        };
+        return upstream -> upstream.flatMap(
+                (Function<BaseBean<T>,Publisher<BaseBean<T>>>) bean ->{
+                    if (bean.getCode() == successCode) {
+                        return createData(bean);
+                    } else {
+                        return Flowable.error(new ResponseException(bean.getCode(),bean.getMsg()));
+                    }
+                }
+        ).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }
