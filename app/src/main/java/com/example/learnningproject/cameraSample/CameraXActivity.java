@@ -29,11 +29,11 @@ import java.util.List;
 //cameraX 预览，图片分析，图片拍摄，视频拍摄
 
 /**
- * ImageCapture 配置camerax拍摄用例，可以控制用例操作的不同方面
- * CameraXConfig 可以更改在不同场景下的配置
+ * ImageCapture: 配置camerax拍摄用例，可以控制用例操作的不同方面。
+ * CameraXConfig: 可以更改在不同场景下的配置。
  * Preview：提供元数据输出，以便使用 Preview.getTargetRotation() 了解目标分辨率的旋转设置。
  * ImageAnalysis：提供元数据输出，以便了解图片缓冲区坐标相对于显示坐标的位置。
- * ImageCapture：更改图片 Exif 元数据、缓冲区或同时更改两者，从而反映旋转设置。更改的值取决于 HAL 实现。
+ * Exif: 元数据、缓冲区或同时更改两者，从而反映旋转设置。更改的值取决于 HAL 实现。
  */
 public class CameraXActivity extends AppCompatActivity {
 

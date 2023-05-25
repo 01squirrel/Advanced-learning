@@ -23,7 +23,7 @@ import com.example.learnningproject.R;
 
 /**
  * 以下是对 Messenger 使用方式的摘要：
- *
+ * 使用此方式创建的服务可与远程进程通信。
  * 1.服务实现一个 Handler，由其接收来自客户端的每个调用的回调。
  * 2.服务使用 Handler 来创建 Messenger 对象（该对象是对 Handler 的引用）。
  * 3.Messenger 创建一个 IBinder，服务通过 onBind() 将其返回给客户端。

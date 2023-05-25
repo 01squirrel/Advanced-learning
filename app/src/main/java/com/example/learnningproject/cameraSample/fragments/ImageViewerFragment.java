@@ -36,6 +36,7 @@ public class ImageViewerFragment extends Fragment {
     /** These are the magic numbers used to separate the different JPG data chunks */
     private final List<Integer> JPEG_DELIMITER_BYTES = new ArrayList<>();
 
+    private final ImageViewerFragmentArgs args = new com.example.learnningproject.cameraSample.fragments.ImageViewerFragmentArgs();
 
     /**
      * Use this factory method to create a new instance of
@@ -64,7 +65,6 @@ public class ImageViewerFragment extends Fragment {
         for(int i = -1;i>=-39;i--){
             JPEG_DELIMITER_BYTES.add(i);
         }
-        com.example.learnningproject.cameraSample.fragments.ImageViewerFragmentArgs args = new ImageViewerFragmentArgs();
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = false;
         // Keep Bitmaps at less than 1 MP

@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -21,6 +23,7 @@ import com.example.learnningproject.database.AppDataBase;
 import com.example.learnningproject.database.dao.WordDao;
 import com.example.learnningproject.database.entity.UserEntity;
 import com.example.learnningproject.database.entity.Word;
+import com.example.network.BaseConfig;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -45,6 +48,8 @@ public class BaseApplication extends Application implements CameraXConfig.Provid
         br = new ManifestBroadcast();
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         this.registerReceiver(br,filter);
+        BaseConfig config = new BaseConfig();
+        config.setBASE_URL("176.16.4.1");
     }
     public AppDataBase getDbInstance(){
         UserEntity entity = new UserEntity(1,"bob","jojo",18);

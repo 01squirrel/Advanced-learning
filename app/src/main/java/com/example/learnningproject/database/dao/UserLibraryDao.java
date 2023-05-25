@@ -27,7 +27,7 @@ public interface UserLibraryDao {
             "WHERE userentity.userId = library.userOwnerId")
      LiveData<List<UserLibrary>> loadUserLibrary();
     //根据所需的映射结构为方法定义多重映射返回值类型，并直接在 SQL 查询中定义实体之间的关系。
-    @Query("select * from userentity join library on userentity.userId = library.userOwnerId")
+    @Query("select * from userentity join Library on userentity.userId = Library.userOwnerId")
      Map<UserEntity,List<Library>> loadUserAndLibrary();
 
     @Transaction

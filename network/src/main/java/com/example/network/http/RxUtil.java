@@ -45,14 +45,14 @@ public class RxUtil {
 
     public static <T> FlowableTransformer<BaseBean<T>,BaseBean<T>> handleResult(final int successCode){
         return upstream -> upstream.flatMap(
-                (Function<BaseBean<T>,Publisher<BaseBean<T>>>) bean ->{
-                    if (bean.getCode() == successCode) {
-                        return createData(bean);
-                    } else {
-                        return Flowable.error(new ResponseException(bean.getCode(),bean.getMsg()));
-                    }
-                }
-        ).subscribeOn(Schedulers.io())
+                        (Function<BaseBean<T>, Publisher<BaseBean<T>>>) bean -> {
+                            if (bean.getCode() == successCode) {
+                                return createData(bean);
+                            } else {
+                                return Flowable.error(new ResponseException(bean.getCode(), bean.getMsg()));
+                            }
+                        }
+                ).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 }

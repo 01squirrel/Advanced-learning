@@ -2,6 +2,13 @@
     <!-- Base application theme. -->
     <style name="Theme.LearnningProject" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
+        <!-- Primary brand color
+            colorPrimary 是toolbar的背景颜色
+            colorPrimaryDark是StatusBar的颜色
+            android:textColorPrimary是主标题的字体颜色
+            android:colorControlNormal是控制元件的默认状态颜色以及overflow menu（三个点）的颜色
+            colorAccent是控制元件在选中状态的颜色
+        -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/white</item>

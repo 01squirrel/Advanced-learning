@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.ImageFormat;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
@@ -22,6 +21,15 @@ import android.media.Image;
 import android.media.ImageReader;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.util.Log;
+import android.util.Size;
+import android.view.LayoutInflater;
+import android.view.Surface;
+import android.view.SurfaceHolder;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,16 +42,6 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.util.Log;
-import android.util.Size;
-import android.view.LayoutInflater;
-import android.view.Surface;
-import android.view.SurfaceHolder;
-import android.view.View;
-import android.view.ViewGroup;
-
 import com.example.learnningproject.R;
 import com.example.learnningproject.databinding.FragmentCameraBinding;
 import com.example.learnningproject.util.CameraSizes;
@@ -52,20 +50,16 @@ import com.example.learnningproject.util.OrientationLiveData;
 
 import java.io.Closeable;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ArrayBlockingQueue;
-
-import javax.xml.transform.Result;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -93,9 +87,8 @@ public class CameraFragment extends Fragment {
     CameraDevice camera;
     CameraCaptureSession session;
     CameraCharacteristics characteristics;
-    CameraFragmentArgs args;
+    private final CameraFragmentArgs args = new com.example.learnningproject.cameraSample.fragments.CameraFragmentArgs();
     private final int IMAGE_BUFFER_SIZE = 3;
-    private long ANIMATION_FAST_MILLIS = 50L;
     private OrientationLiveData relativeOrientation;
 
 
@@ -124,13 +117,11 @@ public class CameraFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        args = new CameraFragmentArgs();
         try {
             characteristics = manager.getCameraCharacteristics(args.getCameraId());
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
-
         cameraThread = new HandlerThread("CameraThread");
         imageReaderThread  = new HandlerThread("imageReaderThread");
         cameraThread.start();
@@ -163,7 +154,7 @@ public class CameraFragment extends Fragment {
                 // Selects appropriate preview size and configures view finder
                 try {
                     Size previewSize = CameraSizes.class.newInstance()
-                            .getPreviewOutputSize(binding.viewFinder.getDisplay(), characteristics, surfaceHolder.getClass(), null);
+                            .getPreviewOutputSize(binding.viewFinder.getDisplay(), characteristics, surfaceHolder.getClass(), args.getPixelFormat());
                     Log.d(TAG, "View finder size: {" + binding.viewFinder.getWidth() + "} x {" + binding.viewFinder.getHeight() + "}");
                     Log.d(TAG, "Selected preview size:" + previewSize);
                     binding.viewFinder.setAspectRatio(previewSize.getWidth(), previewSize.getHeight());
@@ -209,7 +200,7 @@ public class CameraFragment extends Fragment {
                 // Start a capture session using our open camera and list of Surfaces where frames will go
                 createCaptureSession(camera,targets,cameraHandler);
                 //CaptureRequest request = camera.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW).build();
-                CaptureRequest.Builder  builder = camera.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+                CaptureRequest.Builder builder = camera.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
                 builder.set(CaptureRequest.JPEG_QUALITY,(byte)100);
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
                     Location location = getLocation();
@@ -375,7 +366,7 @@ public class CameraFragment extends Fragment {
                             int rotation = relativeOrientation.getValue() == null ? 0 : relativeOrientation.getValue();
                             boolean mirrored = characteristics.get(CameraCharacteristics.LENS_FACING) ==
                                     CameraCharacteristics.LENS_FACING_FRONT;
-                            int exifOrientation  = ExifUtils.computeExifOrientation(rotation,mirrored);
+                            int exifOrientation = ExifUtils.computeExifOrientation(rotation,mirrored);
                             combinedCaptureResult[0] = new CombinedCaptureResult(image, result, exifOrientation, imageReader.getImageFormat());
                         } catch (InterruptedException e) {
                             e.printStackTrace();
@@ -394,9 +385,10 @@ public class CameraFragment extends Fragment {
             View overlay = binding.overlay;
             ColorDrawable drawable = new ColorDrawable(Color.argb(150,255,255,255));
             overlay.setBackground(drawable);
+            long ANIMATION_FAST_MILLIS = 50L;
             overlay.postDelayed(() -> {
                 overlay.setBackground(null);
-            },  ANIMATION_FAST_MILLIS);
+            }, ANIMATION_FAST_MILLIS);
         }
     }
 
@@ -409,8 +401,9 @@ public class CameraFragment extends Fragment {
                 byte[] bytes = new byte[buffer.remaining()];
                 try {
                     file = createFile(requireContext(),"jpg");
-                    FileOutputStream outputStream = new FileOutputStream(file);
-                    outputStream.write(bytes);
+                    try (FileOutputStream outputStream = new FileOutputStream(file)) {
+                        outputStream.write(bytes);
+                    }
                 }catch (IOException e){
                     e.printStackTrace();
                     RuntimeException exception = new RuntimeException("Unable to write JPEG image to file");
@@ -418,15 +411,16 @@ public class CameraFragment extends Fragment {
                 }
                 break;
             case ImageFormat.RAW_SENSOR:
-                DngCreator creator = new DngCreator(characteristics,result.metadata);
-                file = createFile(requireContext(),"dng");
-                try {
-                    FileOutputStream outputStream = new FileOutputStream(file);
-                    creator.writeImage(outputStream,result.image);
-                }catch (IOException e){
-                    e.printStackTrace();
-                    RuntimeException exception = new RuntimeException("Unable to write JPEG image to file");
-                    Log.e(TAG, exception.getMessage(),exception );
+                try (DngCreator creator = new DngCreator(characteristics, result.metadata)) {
+                    file = createFile(requireContext(), "dng");
+                    try {
+                        FileOutputStream outputStream = new FileOutputStream(file);
+                        creator.writeImage(outputStream, result.image);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        RuntimeException exception = new RuntimeException("Unable to write JPEG image to file");
+                        Log.e(TAG, exception.getMessage(), exception);
+                    }
                 }
                 break;
             default:

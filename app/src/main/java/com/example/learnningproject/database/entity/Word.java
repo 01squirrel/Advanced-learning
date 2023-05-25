@@ -9,6 +9,15 @@ import androidx.room.PrimaryKey;
 public class Word {
     @PrimaryKey(autoGenerate = true)
     private int id;
+
+    public int getId() {
+        return this.id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @NonNull
     @ColumnInfo(name = "word")
     private final String mWord;

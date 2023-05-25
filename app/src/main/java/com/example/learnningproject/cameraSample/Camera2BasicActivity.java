@@ -18,7 +18,7 @@ public class Camera2BasicActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this,R.layout.activity_camera2_basic);
-        setContentView(com.example.learnningproject.R.layout.activity_camera2_basic);
+        setContentView(binding.getRoot());
     }
 
     @Override

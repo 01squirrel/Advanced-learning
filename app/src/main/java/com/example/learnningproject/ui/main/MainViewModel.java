@@ -12,6 +12,8 @@ import android.os.Environment;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
+import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.learnningproject.R;
@@ -20,16 +22,15 @@ import com.example.learnningproject.broadcast.ManifestBroadcast;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 
 public class MainViewModel extends ViewModel {
-
+    private MutableLiveData<String> currentText;
+    public MutableLiveData<String> getCurrentText() {
+        if(currentText == null) {
+            currentText = new MediatorLiveData<>();
+        }
+        return currentText;
+    }
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void shareInfo(){
         //分享信息

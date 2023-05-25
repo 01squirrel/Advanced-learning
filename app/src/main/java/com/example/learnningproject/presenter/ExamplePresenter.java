@@ -1,5 +1,7 @@
 package com.example.learnningproject.presenter;
 
+import android.widget.Toast;
+
 import com.example.learnningproject.contract.ExampleContract;
 import com.example.learnningproject.model.ExampleModel;
 import com.example.learnningproject.base.BasePresenter;
@@ -24,6 +26,7 @@ public class ExamplePresenter extends BasePresenter<ExampleContract.View> implem
             @Override
             protected void doOnNext(BaseBean<Object> bean) {
                 //成功返回数据处理
+                if(bean.getCode() == 200) getView().onLoginSuccess(true);
             }
 
             @Override

@@ -9,7 +9,7 @@ import io.reactivex.rxjava3.core.Flowable;
  */
 public class ExampleContract {
     public interface View extends BaseView {
-        void onLoginSuccess();
+        void onLoginSuccess(boolean isLogin);
     }
     public interface Presenter{
         void login(String uid);

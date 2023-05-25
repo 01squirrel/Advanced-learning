@@ -19,6 +19,7 @@ public class RetrofitHolder {
     public static Retrofit getInstance(){
         if(TextUtils.isEmpty(BaseUrl)){
             Log.e(TAG, "getInstance:  BaseUrl is initialized" );
+            initBaseUrl();
         }
         if(instance == null){
             instance = new Retrofit.Builder()
@@ -51,7 +52,7 @@ public class RetrofitHolder {
     }
 
     //初始化baseurl
-    public static void initBaseUrl( ){
+    public static void initBaseUrl(){
         RetrofitHolder.BaseUrl = new BaseConfig().getBASE_URL();
     }
     public static void initBaseUrl(String baseUrl){RetrofitHolder.BaseUrl = baseUrl;}

@@ -125,7 +125,7 @@ public class SelectorFragment extends Fragment {
         for (String id : cameraIds){
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(id);
             String orientation = lensOrientationString(characteristics.get(CameraCharacteristics.LENS_FACING));
-            int[] capabilities =  characteristics.get(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES);
+            int[] capabilities = characteristics.get(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES);
             int[] outputs = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP).getOutputFormats();
             if(ArrayUtils.contains(capabilities,CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES_BACKWARD_COMPATIBLE)){
                 //所有的相机都必须支持JPEG格式

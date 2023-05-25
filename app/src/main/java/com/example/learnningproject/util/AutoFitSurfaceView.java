@@ -25,18 +25,18 @@ public class AutoFitSurfaceView extends SurfaceView {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
-        if(aspectRatio == 0f){
+        if (aspectRatio == 0f) {
             setMeasuredDimension(width, height);
-        }else {
+        } else {
             int newWidth,newHeight;
             float actualRatio = aspectRatio;
-            if(width < height){
+            if (width < height) {
                 actualRatio = 1 / aspectRatio;
             }
-            if(width < height * actualRatio){
+            if (width < height * actualRatio) {
                 newHeight = height;
                 newWidth = Math.round(height * actualRatio);
-            }else{
+            } else {
                 newWidth = width;
                 newHeight = Math.round(width * actualRatio);
             }

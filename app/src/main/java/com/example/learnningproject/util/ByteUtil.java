@@ -55,9 +55,9 @@ public class ByteUtil {
         if (src != null && src.length > 0) {
             char[] buffer = new char[2];
 
-            for(int i = 0; i < src.length; ++i) {
-                buffer[0] = forDigit(src[i] >>> 4 & 15, 16);
-                buffer[1] = forDigit(src[i] & 15, 16);
+            for (byte b : src) {
+                buffer[0] = forDigit(b >>> 4 & 15, 16);
+                buffer[1] = forDigit(b & 15, 16);
                 builder.append(buffer);
             }
 

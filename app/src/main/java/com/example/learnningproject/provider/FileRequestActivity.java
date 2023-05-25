@@ -1,6 +1,8 @@
 package com.example.learnningproject.provider;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;

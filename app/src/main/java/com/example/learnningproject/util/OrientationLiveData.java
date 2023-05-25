@@ -67,6 +67,6 @@ public class OrientationLiveData extends LiveData<Integer> {
         } else {
             sign = -1;
         }
-        return (sensorOrientationDegrees - (deviceOrientationDegrees * sign) + 360 ) % 360;
+        return ( 360 + (sensorOrientationDegrees - deviceOrientationDegrees * sign)) % 360;
     }
 }
