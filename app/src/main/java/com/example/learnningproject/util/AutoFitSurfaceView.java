@@ -8,6 +8,7 @@ import android.view.SurfaceView;
 public class AutoFitSurfaceView extends SurfaceView {
     private float aspectRatio = 0f;
     private final String TAG = AutoFitSurfaceView.class.getSimpleName();
+
     public AutoFitSurfaceView(Context context) {
         super(context);
     }
@@ -28,7 +29,7 @@ public class AutoFitSurfaceView extends SurfaceView {
         if (aspectRatio == 0f) {
             setMeasuredDimension(width, height);
         } else {
-            int newWidth,newHeight;
+            int newWidth, newHeight;
             float actualRatio = aspectRatio;
             if (width < height) {
                 actualRatio = 1 / aspectRatio;
@@ -40,15 +41,16 @@ public class AutoFitSurfaceView extends SurfaceView {
                 newWidth = width;
                 newHeight = Math.round(width * actualRatio);
             }
-            setMeasuredDimension(newWidth,newHeight);
+            setMeasuredDimension(newWidth, newHeight);
         }
     }
-    public void setAspectRatio(int width,int height){
-        if(width < 0 || height < 0){
-            Log.e(TAG, "setAspectRatio: Size cannot be negative" );
-        }else{
+
+    public void setAspectRatio(int width, int height) {
+        if (width < 0 || height < 0) {
+            Log.e(TAG, "setAspectRatio: Size cannot be negative");
+        } else {
             aspectRatio = (float) width / height;
-            getHolder().setFixedSize(width,height);
+            getHolder().setFixedSize(width, height);
             requestLayout();
         }
     }

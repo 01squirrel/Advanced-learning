@@ -41,8 +41,9 @@ public class MainViewModel extends ViewModel {
         // (Optional) Here we're setting the title of the content
         intent.putExtra(Intent.EXTRA_TITLE, "Send message");
         intent.setType("text/plain");
+        //pendingIntent 用于获取用户何时分享以及分享的目标
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1,
-                new Intent(context,ManifestBroadcast.class), PendingIntent.FLAG_IMMUTABLE);
+                intent, PendingIntent.FLAG_IMMUTABLE);
         intent = Intent.createChooser(intent,"share info",pendingIntent.getIntentSender());
         if (context != null) {
             context.startActivity(intent);
@@ -77,7 +78,7 @@ public class MainViewModel extends ViewModel {
             }
             File imagePath = new File(Environment.getExternalStorageDirectory(), image_dir);
             File newFile = new File(imagePath,"image.png");
-            return FileProvider.getUriForFile(ctx,"com.android",newFile);
+            return FileProvider.getUriForFile(ctx,"com.example.learnningproject.fileprovider",newFile);
         }
         return null;
     }

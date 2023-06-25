@@ -41,6 +41,7 @@ import androidx.exifinterface.media.ExifInterface;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.transition.TransitionInflater;
 
 import com.example.learnningproject.R;
 import com.example.learnningproject.databinding.FragmentCameraBinding;
@@ -113,6 +114,8 @@ public class CameraFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TransitionInflater inflater = TransitionInflater.from(requireContext());
+        setExitTransition(inflater.inflateTransition(R.transition.fade));
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -247,10 +250,7 @@ public class CameraFragment extends Fragment {
     }
 
     public void openCamera(CameraManager manager, String cameraId, Handler handler) throws CameraAccessException {
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            Log.i(TAG, "openCamera: no camera permission");
-            return;
-        }
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
         manager.openCamera(cameraId, new CameraDevice.StateCallback() {
             @Override
             public void onOpened(@NonNull CameraDevice cameraDevice) {
@@ -259,28 +259,29 @@ public class CameraFragment extends Fragment {
 
             @Override
             public void onDisconnected(@NonNull CameraDevice cameraDevice) {
-                Log.w(TAG, "Camera "+ cameraId +"has been disconnected");
+                Log.w(TAG, "Camera " + cameraId + "has been disconnected");
                 requireActivity().finish();
             }
 
             @Override
             public void onError(@NonNull CameraDevice cameraDevice, int i) {
                 String error = "";
-                if(i == ERROR_CAMERA_DEVICE){
+                if (i == ERROR_CAMERA_DEVICE) {
                     error = "Fatal (device)";
-                }else if(i == ERROR_CAMERA_DISABLED){
+                } else if (i == ERROR_CAMERA_DISABLED) {
                     error = "Device policy";
-                }else if (i == ERROR_CAMERA_IN_USE){
+                } else if (i == ERROR_CAMERA_IN_USE) {
                     error = "Camera in use";
-                }else if (i == ERROR_CAMERA_SERVICE){
+                } else if (i == ERROR_CAMERA_SERVICE) {
                     error = "Fatal (service)";
-                }else if(i == ERROR_MAX_CAMERAS_IN_USE){
+                } else if (i == ERROR_MAX_CAMERAS_IN_USE) {
                     error = "Maximum cameras in use";
                 }
-                RuntimeException exception = new RuntimeException("Camera + " + cameraId +"error: ("+i+")"+error+")");
+                RuntimeException exception = new RuntimeException("Camera + " + cameraId + "error: (" + i + ")" + error + ")");
                 Log.e(TAG, exception.getMessage(), exception);
             }
         }, handler);
+    }
     }
     public void createCaptureSession(CameraDevice device,List<Surface> surfaces,Handler handler){
         try {

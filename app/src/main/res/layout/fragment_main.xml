@@ -70,6 +70,16 @@
             app:layout_constraintStart_toEndOf="@+id/mb_camera2Basic"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"/>
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/mb_camerax"
+            app:backgroundTint="@color/teal_200"
+            android:text="CameraX Sample"
+            app:layout_constraintTop_toBottomOf="@+id/mb_camera2Basic"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

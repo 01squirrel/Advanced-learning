@@ -1,19 +1,32 @@
-
 apply plugin: 'com.android.application'
 apply plugin: 'androidx.navigation.safeargs'
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 31
 
     defaultConfig {
         applicationId "com.example.learnningproject"
         minSdkVersion 21
-        targetSdkVersion 33
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        ndk {
+            //设置支持的so库框架
+            abiFilters 'armeabi-v7a','x86','x86_64' //'x86' 'armeabi-v7a' 'x86_64' 'arm64-v8a' 'armeabi'
+        }
+        externalNativeBuild {
+            cmake {
+                cppFlags '-std=c++17'
+            }
+        }
     }
+   sourceSets {
+       main {
+           jniLibs.srcDirs = ['libs']
+       }
+   }
 
     buildTypes {
         release {
@@ -25,22 +38,30 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    dataBinding{
-        enabled  = true
+    buildFeatures {
+        dataBinding true
     }
-    viewBinding{
+    viewBinding {
         enabled = true
     }
-    android.applicationVariants.all{ variant ->
-        variant.outputs.all{
+    externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.18.1'
+        }
+    }
+    ndkVersion '21.4.7075529'
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
             outputFileName = "LearnApk_${BuildType.name}_V${versionName}_${getTime()}.apk"
         }
     }
 }
 
-static def getTime(){
+static def getTime() {
     return new Date().format("yy-MM-dd")
 }
+
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.6.1'
@@ -52,7 +73,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    implementation('androidx.sharetarget:sharetarget:1.2.0')
+    implementation('androidx.sharetarget:sharetarget:1.1.0')
     implementation('androidx.camera:camera-camera2:1.1.0')
     //okhttp
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.10'
@@ -93,14 +114,14 @@ dependencies {
     //testImplementation "androidx.room:room-testing:$room_version"
 
     // optional - Paging 3 Integration
-    implementation "androidx.room:room-paging:2.5.0-alpha03"
+    //implementation "androidx.room:room-paging:2.5.0-alpha03"
 
     implementation "androidx.concurrent:concurrent-futures:1.1.0"
     //CameraX
     implementation "androidx.camera:camera-camera2:1.1.0"
     implementation "androidx.camera:camera-core:1.1.0"
     implementation "androidx.camera:camera-lifecycle:1.1.0"
-    implementation "androidx.camera:camera-mlkit-vision:1.2.0-beta02"
+    //implementation "androidx.camera:camera-mlkit-vision:1.1.0"
     implementation "androidx.camera:camera-video:1.1.0"
     implementation "androidx.camera:camera-view:1.1.0"
     implementation "androidx.camera:camera-extensions:1.1.0"
@@ -108,13 +129,13 @@ dependencies {
     //工具类
     //    implementation 'com.blankj:utilcodex:1.27.6'
 
-   // implementation 'com.github.JessYanCoding:AndroidAutoSize:v1.2.1'
+    // implementation 'com.github.JessYanCoding:AndroidAutoSize:v1.2.1'
 
     // EXIF Interface
     implementation 'androidx.exifinterface:exifinterface:1.3.3'
 
     //workManager
-    def work_version = "2.8.0"
+    def work_version = "2.7.0"
 
     // (Java only)
     implementation "androidx.work:work-runtime:$work_version"
@@ -126,15 +147,22 @@ dependencies {
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
     implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
 
-    //tencent bugly
-    //    implementation 'com.tencent.bugly:crashreport_upgrade:latest.release'
+    //preference dataStore
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
+    // optional - RxJava2 support
+    implementation "androidx.datastore:datastore-preferences-rxjava2:1.0.0"
 
+    //tencent bugly
+    //implementation 'com.tencent.bugly:crashreport_upgrade:latest.release'
+    implementation 'com.tencent.bugly:crashreport:latest.release'
     //工具类
     //    implementation 'com.blankj:utilcodex:1.31.0'
     //    implementation 'com.orhanobut:logger:2.2.0'
     //  implementation 'com.lzy.net:okgo:3.0.4'
-    //    implementation 'com.github.bumptech.glide:glide:4.8.0'
-
+        implementation 'com.github.bumptech.glide:glide:4.8.0'
+    implementation 'com.google.code.gson:gson:2.10'
+   // implementation 'com.alibaba:fastjson:1.2.62.android'
+    implementation 'com.alibaba:fastjson:1.2.62'
 //    // optional - RxJava2 support
 //    implementation "androidx.work:work-rxjava2:$work_version"
 //

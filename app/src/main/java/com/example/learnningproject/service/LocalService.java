@@ -13,6 +13,7 @@ import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
 import android.content.Intent;
+import android.content.UriMatcher;
 import android.content.pm.PackageManager;
 import android.os.Binder;
 import android.os.Handler;
@@ -20,6 +21,7 @@ import android.os.IBinder;
 import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import androidx.annotation.NonNull;

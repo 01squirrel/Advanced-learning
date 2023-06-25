@@ -8,6 +8,9 @@ import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.net.URI;
+import java.net.URL;
+
 public class NewWordActivity extends AppCompatActivity {
     public static final String EXTRA_REPLY = "com.example.android.wordlistsql.REPLY";
 

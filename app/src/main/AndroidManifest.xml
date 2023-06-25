@@ -7,9 +7,10 @@
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
-    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!-- 声明apk所需要的内容 -->
@@ -30,13 +31,27 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LearnningProject"
-        tools:targetApi="31">
+        tools:targetApi="31"
+        android:requestLegacyExternalStorage="false">
+        <!-- bugly配置信息-->
+        <meta-data
+            android:name="BUGLY_APPID"
+            android:value="000001"/>
+        <meta-data
+            android:name="BUGLY_APP_VERSION"
+            android:value="1.0"/>
+        <meta-data
+            android:name="BUGLY_APP_CHANNEL"
+            android:value="100000"/>
+        <meta-data
+            android:name="BUGLY_ENABLE_DEBUG"
+            android:value="true"/>
         <activity
             android:name=".provider.FileRequestActivity"
             android:exported="false" />
         <activity
             android:name=".provider.FileSelectActivity"
-            android:exported="false"
+            android:exported="true"
             android:label="File Selector">
             <intent-filter>
                 <action android:name="android.intent.action.PICK" />
@@ -86,16 +101,12 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND_MULTIPLE" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:mimeType="image/*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
@@ -111,16 +122,20 @@
 
         <service
             android:name=".service.MessengerService"
-            android:label="@string/bind_message" />
+            android:label="@string/bind_message"
+            android:exported="false"/>
         <service
             android:name=".service.LocalService"
-            android:label="@string/bind_service" />
+            android:label="@string/bind_service"
+            android:exported="false"/>
         <service
             android:name=".service.SetUpService"
-            android:label="@string/setUp_intentService" />
+            android:label="@string/setUp_intentService"
+            android:exported="false"/>
         <service
             android:name=".service.StartService"
-            android:label="@string/start_service" />
+            android:label="@string/start_service"
+            android:exported="false"/>
 
         <receiver
             android:name=".broadcast.ManifestBroadcast"

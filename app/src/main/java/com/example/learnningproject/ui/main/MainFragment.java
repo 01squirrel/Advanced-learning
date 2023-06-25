@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.example.learnningproject.R;
 import com.example.learnningproject.WordsActivity;
+import com.example.learnningproject.base.BaseApplication;
 import com.example.learnningproject.cameraSample.Camera2Activity;
 import com.example.learnningproject.cameraSample.Camera2BasicActivity;
 import com.example.learnningproject.databinding.FragmentMainBinding;

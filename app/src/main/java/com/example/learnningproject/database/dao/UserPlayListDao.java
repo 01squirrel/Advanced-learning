@@ -1,7 +1,6 @@
 package com.example.learnningproject.database.dao;
 
 import androidx.room.Dao;
-import androidx.room.Entity;
 import androidx.room.Query;
 import androidx.room.Transaction;
 

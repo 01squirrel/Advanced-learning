@@ -3,7 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/work_file/learnPro/app/src/main/res/drawable/button_round_corners.xml" value="0.136" />
+        <entry key="..\:/work_file/learnPro/app/src/main/res/drawable/ic_back.xml" value="0.136" />
         <entry key="..\:/work_file/learnPro/app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.1325" />
+        <entry key="..\:/work_file/learnPro/app/src/main/res/drawable/ic_launcher_background.xml" value="0.136" />
         <entry key="..\:/work_file/learnPro/app/src/main/res/layout/activity_binder.xml" value="0.22826086956521738" />
         <entry key="..\:/work_file/learnPro/app/src/main/res/layout/activity_camera2.xml" value="0.24947916666666667" />
         <entry key="..\:/work_file/learnPro/app/src/main/res/layout/activity_camera2_basic.xml" value="0.23489583333333333" />
@@ -14,6 +17,7 @@
         <entry key="..\:/work_file/learnPro/app/src/main/res/layout/activity_new_word.xml" value="0.24947916666666667" />
         <entry key="..\:/work_file/learnPro/app/src/main/res/layout/activity_words.xml" value="0.24947916666666667" />
         <entry key="..\:/work_file/learnPro/app/src/main/res/layout/camera_item.xml" value="0.2484375" />
+        <entry key="..\:/work_file/learnPro/app/src/main/res/layout/camera_ui_container.xml" value="0.22826086956521738" />
         <entry key="..\:/work_file/learnPro/app/src/main/res/layout/fragment_camera.xml" value="0.24947916666666667" />
         <entry key="..\:/work_file/learnPro/app/src/main/res/layout/fragment_image_viewer.xml" value="0.24947916666666667" />
         <entry key="..\:/work_file/learnPro/app/src/main/res/layout/fragment_main.xml" value="0.24947916666666667" />

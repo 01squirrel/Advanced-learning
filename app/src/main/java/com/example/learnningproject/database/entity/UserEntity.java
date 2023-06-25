@@ -17,8 +17,11 @@ import java.util.Objects;
 public class UserEntity {
     @PrimaryKey
     public int userId;
+    @ColumnInfo
     public String firstName;
+    @ColumnInfo
     public String lastName;
+    @ColumnInfo
     public int age;
    // @Embedded public Address address;
 

@@ -10,6 +10,7 @@ import androidx.room.Update;
 import com.example.learnningproject.database.entity.Word;
 
 import java.util.List;
+import java.util.jar.Attributes;
 
 @Dao
 public interface WordDao {

@@ -1,38 +1,61 @@
 package com.example.learnningproject;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.work.WorkInfo;
-import androidx.work.WorkManager;
-
 import android.Manifest;
-import android.content.ComponentName;
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.WindowMetrics;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.parser.Feature;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.example.learnningproject.contract.ExampleContract;
+import com.example.learnningproject.database.entity.Song;
+import com.example.learnningproject.database.entity.Word;
 import com.example.learnningproject.presenter.ExamplePresenter;
 import com.example.learnningproject.ui.main.MainFragment;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements ExampleContract.View {
 
     ActivityResultLauncher<String[]> launcher = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(),
             result -> {
-
+                for(Map.Entry<String,Boolean> entry : result.entrySet()) {
+                    if(!entry.getValue()) {
+                        Log.i("TAG-PERMISSION:", entry.getKey()+" not granted");
+                    }
+                }
             });
     ExamplePresenter presenter;
-    String[] permissions;
+    List<String> permissions;
+    public static String KEY_EVENT_ACTION = "key_event_action";
+    public static String KEY_EVENT_EXTRA = "key_event_extra";
 
     @Override
     public void showLoadingProgress() {
@@ -53,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements ExampleContract.V
         options.inPreferredConfig = Bitmap.Config.RGB_565;
         options.inJustDecodeBounds = false;
         BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_background, options);
-
     }
 
     public enum WindowSizeClass {COMPACT, MEDIUM, EXPANDED}
@@ -62,10 +84,21 @@ public class MainActivity extends AppCompatActivity implements ExampleContract.V
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        permissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        launcher.launch(permissions);
+        permissions = Arrays.asList(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        for(String permission : permissions) {
+           if (ActivityCompat.checkSelfPermission(this,permission) != PackageManager.PERMISSION_GRANTED) {
+               permissions.remove(permission);
+           }
+        }
+        launcher.launch((String[]) permissions.toArray());
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
+                    .setCustomAnimations(
+                            R.anim.slide_in,//enter
+                            R.anim.fade_out,//exit
+                            R.anim.fade_in,//popEnter
+                            R.anim.slide_out//popExit
+                    )
                     .replace(R.id.container, MainFragment.newInstance())
                     .commitNow();
         }
@@ -75,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements ExampleContract.V
             SystemClock.sleep(1000);
         }
         presenter.login("uuid0001");
+        //获取电量信息
         IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         Intent intent = this.registerReceiver(null, filter);
         int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
@@ -89,6 +123,40 @@ public class MainActivity extends AppCompatActivity implements ExampleContract.V
         Log.i("BATTERY STATUS", "is charging " + isCharging
                 + ",charge form status: USB--" + usbCharge + ",AC--" + acCharge
                 + ",the battery is " + battery);
+        //从其他应用接收数据
+        Intent receiveIntent = getIntent();
+        String action = receiveIntent.getAction();
+        String type = receiveIntent.getType();
+        if (Intent.ACTION_SEND.equals(action) && type != null) {
+            if ("text/plain".equals(type)) {
+                String text = receiveIntent.getStringExtra(Intent.EXTRA_TEXT);
+                if(text != null) {//do something with the data
+                    Log.i("tag","received message == "+text);
+                }
+            } else if (type.startsWith("image/")) {
+                Uri imageUri = receiveIntent.getParcelableExtra(Intent.EXTRA_STREAM);
+                if(imageUri != null) {
+                    Log.i("tag","received message == "+imageUri);
+                }
+            }
+        } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
+            if (type.startsWith("image/")) {
+                ArrayList<Uri> uris = receiveIntent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+                if (uris.size() > 0) {
+                    Log.i("tag","received message == "+uris);
+                }
+            }
+        }
+        //content://user_dictionary/word
+        //gson使用
+        Gson gson = new Gson();
+        gson.fromJson("",new TypeToken<List<Word>>(){}.getType());
+        //fastjson使用,示例
+        JSON.toJSONString(new Word("word")); //序列化为JSON字符串
+        JSON.toJSONString(new Word("hello"), SerializerFeature.BeanToArray);//序列化为json数组
+        JSON.parseObject("jsonData",Word.class);//反序列化为对象
+        JSON.parseObject("jsonData", Feature.SupportArrayToBean);
+        JSON.parse("jsondata");//解析json数据
     }
 
     @RequiresApi(api = Build.VERSION_CODES.R)
@@ -125,5 +193,33 @@ public class MainActivity extends AppCompatActivity implements ExampleContract.V
             }
         }
         return sampleSize;
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            Intent intent = new Intent(KEY_EVENT_ACTION);
+            intent.putExtra(KEY_EVENT_EXTRA,keyCode);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    long startTime = 0L;
+    @Override
+    public void onBackPressed() {
+        //startTime = System.currentTimeMillis();
+        if(System.currentTimeMillis() - startTime > 1000) {
+            Toast.makeText(this,"再次滑动退出", Toast.LENGTH_SHORT).show();
+            startTime = System.currentTimeMillis();
+        } else {
+            finish();
+        }
+    }
+    public native String stringGet();
+    static {
+        System.loadLibrary("learnningproject");
     }
 }

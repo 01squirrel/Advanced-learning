@@ -17,6 +17,7 @@ import androidx.annotation.RequiresApi;
 import java.security.PrivilegedAction;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Logger;
 
 //清单声明的接收器
 public class ManifestBroadcast extends BroadcastReceiver {

@@ -16,7 +16,6 @@ public class SetUpService extends IntentService {
     public SetUpService() {
         super("intentService");
     }
-
     /**
      * @param name 服务名
      * @deprecated
@@ -27,6 +26,7 @@ public class SetUpService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+        //运行在子线程里
         try {
             Thread.sleep(5000);//在这里完成相关工作，示例只是sleep 5s
         } catch (InterruptedException e) {
