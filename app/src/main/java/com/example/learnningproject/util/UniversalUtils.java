@@ -49,6 +49,7 @@ public class UniversalUtils {
         return getActivityThreadInLoadedApkField();
     }
 
+    //通过静态字段
     private static Object getActivityThreadInActivityThreadStaticField() {
         try {
             Class activityThreadClass = Class.forName("android.app.ActivityThread");
@@ -60,6 +61,7 @@ public class UniversalUtils {
         }
     }
 
+    //通过静态方法
     private static Object getActivityThreadInActivityThreadStaticMethod() {
         try {
             Class activityThreadClass = Class.forName("android.app.ActivityThread");
@@ -70,6 +72,7 @@ public class UniversalUtils {
         }
     }
 
+    //通过加载apk字段
     private static Object getActivityThreadInLoadedApkField() {
         try {
             Field mLoadedApkField = Application.class.getDeclaredField("mLoadedApk");

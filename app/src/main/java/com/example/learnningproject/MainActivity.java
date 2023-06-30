@@ -86,11 +86,13 @@ public class MainActivity extends AppCompatActivity implements ExampleContract.V
         setContentView(R.layout.activity_main);
         permissions = Arrays.asList(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         for(String permission : permissions) {
-           if (ActivityCompat.checkSelfPermission(this,permission) != PackageManager.PERMISSION_GRANTED) {
+           if (ActivityCompat.checkSelfPermission(this,permission) == PackageManager.PERMISSION_GRANTED) {
                permissions.remove(permission);
            }
         }
-        launcher.launch((String[]) permissions.toArray());
+        if (permissions.size() > 0) {
+            launcher.launch((String[]) permissions.toArray());
+        }
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(

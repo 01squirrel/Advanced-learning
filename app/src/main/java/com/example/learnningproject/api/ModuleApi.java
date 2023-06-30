@@ -4,6 +4,7 @@ import com.example.network.http.BaseBean;
 
 import io.reactivex.rxjava3.core.Flowable;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 /**

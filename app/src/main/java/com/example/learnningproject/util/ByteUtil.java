@@ -1,12 +1,23 @@
 package com.example.learnningproject.util;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+/**
+ * byte 字节数据类型，占1个字节，有符号整数，范围是-128~127 不可以表示中文字符
+ * char 字符数据类型，占2个字节，无符号整数 范围是0~655355 不能表示负数，可以表示中文字符
+ */
 public class ByteUtil {
     private ByteUtil() {
     }
 
+    /**
+     * int -> char unicode
+     * @param digit >0 , < radix
+     * @param radix >=2,<=36
+     * @return char
+     */
     private static char forDigit(int digit, int radix) {
         if (digit < radix && digit >= 0) {
             if (radix >= 2 && radix <= 36) {
@@ -93,8 +104,8 @@ public class ByteUtil {
         return stringBuilder.toString();
     }
 
-    public static String fitDecimalStr(int dicimal, int strLength) {
-        StringBuilder builder = new StringBuilder(String.valueOf(dicimal));
+    public static String fitDecimalStr(int decimal, int strLength) {
+        StringBuilder builder = new StringBuilder(String.valueOf(decimal));
 
         while(builder.length() < strLength) {
             builder.insert(0, "0");
@@ -104,20 +115,21 @@ public class ByteUtil {
     }
 
     public static String str2HexString(String str) {
+        if (str.length() == 0) return "";
         char[] chars = "0123456789ABCDEF".toCharArray();
         StringBuilder sb = new StringBuilder();
         byte[] bs = null;
 
         try {
-            bs = str.getBytes(Charset.forName("utf8"));
+            bs = str.getBytes(StandardCharsets.UTF_8);
         } catch (Exception var6) {
             var6.printStackTrace();
         }
 
-        for(int i = 0; i < bs.length; ++i) {
-            int bit = (bs[i] & 240) >> 4;
+        for (byte b : bs) {
+            int bit = (b & 240) >> 4;
             sb.append(chars[bit]);
-            bit = bs[i] & 15;
+            bit = b & 15;
             sb.append(chars[bit]);
         }
 
@@ -133,10 +145,15 @@ public class ByteUtil {
             int pos = i * 2;
             result[i] = (byte)(hexChar2byte(achar[pos]) << 4 | hexChar2byte(achar[pos + 1]));
         }
-
         return result;
     }
 
+    /**
+     * long =>> byte[]
+     * @param ori long
+     * @param arrayAmount number of bytes
+     * @return byte[]
+     */
     public static byte[] long2bytes(long ori, int arrayAmount) {
         byte[] bytes = new byte[arrayAmount];
 

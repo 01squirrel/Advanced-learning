@@ -1,6 +1,7 @@
 package com.example.learnningproject.service;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -12,6 +13,7 @@ import android.bluetooth.BluetoothProfile;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
+import android.bluetooth.le.ScanSettings;
 import android.content.Intent;
 import android.content.UriMatcher;
 import android.content.pm.PackageManager;
@@ -27,6 +29,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +77,7 @@ public class LocalService extends Service {
         return num.nextInt(100);
     }
 
-    //扩展此服务以提供低功耗蓝牙连接及操作
+    //扩展此服务以提供低功耗蓝牙连接及操作,需要获取蓝牙相关权限
 
     public final static String ACTION_GATT_CONNECTED = "com.example.learnningproject.service.ACTION_GATT_CONNECTED";
     public static final String ACTION_GATT_DISCONNECTED = "com.example.learnningproject.service.ACITON_GATT_DISCONNECTED";
@@ -88,23 +91,28 @@ public class LocalService extends Service {
     private static final int STATE_CONNECTED = 2;
     private BluetoothLeScanner leScanner;
     private boolean isScanning;
-    private List<BluetoothDevice> devices = new ArrayList<>();
-    private Handler handler = new Handler();
+    private final List<BluetoothDevice> devices = new ArrayList<>();
+    private final Handler handler = new Handler();
 
 
     //初始化获取蓝牙适配器对象
     public boolean initialize() {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (bluetoothAdapter == null) {
-            Log.e(TAG, "Unable to obtain a BluetoothAdapter.");
+        if (bluetoothAdapter != null) {
             leScanner = bluetoothAdapter.getBluetoothLeScanner();
+        } else {
+            Log.e(TAG, "Unable to obtain a BluetoothAdapter.");
             return false;
         }
         return true;
     }
 
     //扫描ble设备
+    @SuppressLint("MissingPermission")
     public void scanBLE() {
+        if (leScanner == null) {
+            initialize();
+        }
         if (!isScanning) {
             handler.postDelayed(() -> {
                 isScanning = false;
@@ -124,11 +132,20 @@ public class LocalService extends Service {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
+            if(callbackType == ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
             devices.add(result.getDevice());
         }
     };
 
+    public List<BluetoothDevice> getDevices() {
+        if (devices.size() > 0) {
+            return devices;
+        }
+        return null;
+    }
+
     //连接到BLE设备,GATT服务
+    @SuppressLint("MissingPermission")
     public boolean connect(String address) {
         if (bluetoothAdapter == null || address == null) {
             Log.w(TAG, "BluetoothAdapter not initialized or unspecified address.");
@@ -155,6 +172,7 @@ public class LocalService extends Service {
     }
 
     private final BluetoothGattCallback gattCallback = new BluetoothGattCallback() {
+        @SuppressLint("MissingPermission")
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             super.onConnectionStateChange(gatt, status, newState);
@@ -182,9 +200,9 @@ public class LocalService extends Service {
         }
 
         @Override
-        public void onCharacteristicRead(@NonNull BluetoothGatt gatt, @NonNull BluetoothGattCharacteristic characteristic, @NonNull byte[] value, int status) {
-            super.onCharacteristicRead(gatt, characteristic, value, status);
-            if(status == BluetoothGatt.GATT_SUCCESS) {
+        public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+            super.onCharacteristicRead(gatt, characteristic, status);
+            if (status == BluetoothGatt.GATT_SUCCESS) {
                 broadcastUpdate(ACTION_DATA_AVAILABLE);
             }
         }
@@ -202,6 +220,13 @@ public class LocalService extends Service {
         return bluetoothGatt.getServices();
     }
 
+    public void readListCharacteristic(List<BluetoothGattCharacteristic> services) {
+        for (BluetoothGattCharacteristic characteristic : services) {
+            readGattCharacteristic(characteristic);
+        }
+    }
+
+    @SuppressLint("MissingPermission")
     public void readGattCharacteristic(BluetoothGattCharacteristic characteristic) {
         if (bluetoothGatt == null) {
             Log.w(TAG, "BluetoothGatt not initialized");
@@ -220,6 +245,7 @@ public class LocalService extends Service {
         bluetoothGatt.readCharacteristic(characteristic);
     }
 
+    @SuppressLint("MissingPermission")
     private void close() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling

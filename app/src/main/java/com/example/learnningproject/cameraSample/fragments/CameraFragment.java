@@ -1,7 +1,9 @@
 package com.example.learnningproject.cameraSample.fragments;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.ImageFormat;
@@ -31,6 +33,8 @@ import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -91,7 +95,17 @@ public class CameraFragment extends Fragment {
     private final CameraFragmentArgs args = new com.example.learnningproject.cameraSample.fragments.CameraFragmentArgs();
     private final int IMAGE_BUFFER_SIZE = 3;
     private OrientationLiveData relativeOrientation;
-
+    private final List<String> unGranted = new ArrayList<>();
+    private final String[] permissions = new String[]{Manifest.permission.CAMERA,Manifest.permission.ACCESS_COARSE_LOCATION};
+    ActivityResultLauncher<String[]> launcher = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(),result -> {
+        for(String permission : permissions) {
+            if(Boolean.TRUE.equals(result.get(permission))) {
+                Log.i(TAG, permission+" permission granted");
+            } else {
+                unGranted.add(permission);
+            }
+        }
+    });
 
     /**
      * Use this factory method to create a new instance of
@@ -151,6 +165,7 @@ public class CameraFragment extends Fragment {
             insets.consumeSystemWindowInsets();
             return insets;
         });
+        launcher.launch(permissions);
         binding.viewFinder.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder surfaceHolder) {
@@ -249,6 +264,7 @@ public class CameraFragment extends Fragment {
         }
     }
 
+    @SuppressLint("MissingPermission")
     public void openCamera(CameraManager manager, String cameraId, Handler handler) throws CameraAccessException {
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
         manager.openCamera(cameraId, new CameraDevice.StateCallback() {
@@ -302,6 +318,7 @@ public class CameraFragment extends Fragment {
             e.printStackTrace();
         }
     }
+    @SuppressLint("MissingPermission")
     @RequiresApi(api = Build.VERSION_CODES.M)
     private Location getLocation(){
         LocationManager manager = requireContext().getSystemService(LocationManager.class);

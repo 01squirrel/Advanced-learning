@@ -38,7 +38,7 @@ public class CameraSizes {
         return new CameraSizes(point.x,point.y);
     }
 
-    //Returns the largest available PREVIEW size. For more information
+    //Returns the largest available PREVIEW size.
     public <T> Size getPreviewOutputSize(Display display, CameraCharacteristics characteristics, Class<T> targetClass, @Nullable Integer format){
         // Find which is smaller: screen or 1080p
         CameraSizes screenSize = getDisplayCameraSize(display);

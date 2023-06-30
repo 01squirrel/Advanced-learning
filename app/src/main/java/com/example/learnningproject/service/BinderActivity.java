@@ -146,6 +146,8 @@ public class BinderActivity extends AppCompatActivity {
         final IntentFilter filter = new IntentFilter();
         filter.addAction(LocalService.ACTION_GATT_CONNECTED);
         filter.addAction(LocalService.ACTION_GATT_DISCONNECTED);
+        filter.addAction(LocalService.ACTION_DATA_AVAILABLE);
+        filter.addAction(LocalService.ACTION_GATT_SERVICES_DISCOVERED);
         return filter;
     }
     @Override
@@ -159,7 +161,7 @@ public class BinderActivity extends AppCompatActivity {
         super.onResume();
         registerReceiver(gattUpdateReceiver,makeGattUpdateIntentFilter());
         if(localService != null) {
-            final boolean result = localService.connect("ble service");
+            final boolean result = localService.connect("00:11:22:AA:BB:CC");
             Log.d("BLE service", "Connect request result=" + result);
         }
     }
@@ -173,9 +175,9 @@ public class BinderActivity extends AppCompatActivity {
             HashMap<String,String> currentServiceData = new HashMap<>();
             //服务获取uuid
             uuid = gattService.getUuid().toString();
-            currentServiceData.put("list_data",uuid);
+            currentServiceData.put("service_id",uuid);
             gattServiceData.add(currentServiceData);
-            gattService.getCharacteristics();
+            localService.readListCharacteristic(gattService.getCharacteristics());
         }
     }
 }

@@ -29,14 +29,16 @@ public class PermissionFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private final String[] permissions = {Manifest.permission.CAMERA};
+    private final String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.ACCESS_COARSE_LOCATION};
+
     public PermissionFragment() {
         // Required empty public constructor
     }
+
     ActivityResultLauncher<String[]> launcher = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
-        if(Boolean.TRUE.equals(result.get(Manifest.permission.CAMERA))){
+        if (Boolean.TRUE.equals(result.get(Manifest.permission.CAMERA))) {
             navigateToCamera();
-        }else {
+        } else {
             Toast.makeText(requireContext(), "Permission request denied", Toast.LENGTH_LONG).show();
         }
     });
@@ -66,10 +68,12 @@ public class PermissionFragment extends Fragment {
             String mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        if(hasPermissions(requireContext())){
-           //startActivity(new Intent(requireContext(), Camera2BasicActivity.class));
+        if (hasPermissions(requireContext())) {
+            //startActivity(new Intent(requireContext(), Camera2BasicActivity.class));
             navigateToCamera();
-        }else{
+        } else if (shouldShowRequestPermissionRationale()) {
+
+        } else {
             launcher.launch(permissions);
         }
     }
@@ -80,16 +84,17 @@ public class PermissionFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_permission, container, false);
     }
 
-    public boolean hasPermissions(Context context){
+    public boolean hasPermissions(Context context) {
         boolean granted = false;
-        for(String permission : permissions){
-           if(ContextCompat.checkSelfPermission(context,permission) == PackageManager.PERMISSION_GRANTED)
-               granted = true;
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED)
+                granted = true;
         }
-             return granted;
+        return granted;
     }
-    private void navigateToCamera(){
-        Navigation.findNavController(requireActivity(),R.id.fragment_container)
+
+    private void navigateToCamera() {
+        Navigation.findNavController(requireActivity(), R.id.fragment_container)
                 .navigate(R.id.action_permissions_to_selector);
     }
 }
